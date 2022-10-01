@@ -1,11 +1,21 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { getAuth ,onAuthStateChanged} from 'firebase/auth';
 const Header = () => {
     const [pageState, setPageState] = useState("Sign in");
     const navigate = useNavigate();
     const location = useLocation();
+    const auth = getAuth();
+    useEffect(() => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setPageState("Profile");
+        } else {
+          setPageState("Sign in");
+        }
+      });
+    }, [auth]);
     function pathMatchRoute(route) {
         if (route === location.pathname) {
           return true;
@@ -16,7 +26,7 @@ const Header = () => {
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
         <div>
           <img
-            src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
+            src="./images/realtorlogo.svg"
             alt="logo"
             className="h-5 cursor-pointer"
             onClick={() => navigate("/")}
@@ -45,7 +55,7 @@ const Header = () => {
                 (pathMatchRoute("/sign-in") || pathMatchRoute("/profile")) &&
                 "text-black border-b-red-500"
               }`}
-              onClick={() => navigate("/sign-in")}
+              onClick={() => navigate("/profile")}
             >
               {pageState}
             </li>
